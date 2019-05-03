@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: myproj 
+      MYSQL_USER: user 
+      MYSQL_PASSWORD: user123
+    ports:
+      - 3306:3306
+    volumes:
+      - ../docker/conf/my.cnf:/etc/mysql/conf.d/mysqlutf8.cnf
+      - ../volumes/db/:/var/lib/mysql
+    command: ['mysqld', '--character-set-server=utf8', '--collation-server=utf8_unicode_ci']

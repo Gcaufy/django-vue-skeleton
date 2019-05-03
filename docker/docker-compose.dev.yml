@@ -1,0 +1,28 @@
+version: '3.3'
+services:
+  client:
+    image: node:10.15.3-alpine
+    volumes:
+      - ../src/client:/app/client
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    environment:
+      - HOST=0.0.0.0
+    working_dir: /app/client
+    command: npm run dev
+
+  server.dev:
+    build:
+      dockerfile: docker/Dockerfile.server.dev
+      context: ../
+    volumes:
+      - ../src/server:/app
+    ports:
+      - 80:80
+    depends_on:
+      - db
+      - client 
+    links:
+      - db

@@ -1,0 +1,28 @@
+version: '3.3'
+services:
+  server.prd:
+    image: gcaufy/django-webpack-vue:latest
+    build:
+      dockerfile: docker/Dockerfile.server.prd
+      context: ../
+    volumes:
+      - ../src/server/staticfiles:/app/staticfiles
+      - ../src/server/web:/app/web
+    ports:
+      - 9000:9000
+    depends_on:
+      - db
+    links:
+      - db
+
+  nginx:
+    image: nginx:1.16-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ../docker/conf/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ../src/server/web:/www/root
+      - ../src/server/staticfiles:/www/static
+      - ../volumes/logs/nginx:/var/log/nginx
+    links:
+      - server.prd

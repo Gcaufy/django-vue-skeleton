@@ -1,0 +1,19 @@
+FROM python:3.7.3-alpine3.9
+RUN apk --update add build-base mysql-dev bash python3-dev linux-headers pcre-dev
+
+RUN pip install uwsgi
+
+COPY src/server/requirements.txt /app/requirements.txt
+RUN cd /app && pip install -r requirements.txt
+
+COPY docker/conf/uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
+COPY docker/scripts/django/run.prd.sh /run.sh
+RUN chmod +x /run.sh
+
+COPY src/server /app
+RUN mkdir -p /app/staticfiles/
+
+WORKDIR /app
+
+EXPOSE 9000 
+CMD ["/bin/bash", "/run.sh"]
